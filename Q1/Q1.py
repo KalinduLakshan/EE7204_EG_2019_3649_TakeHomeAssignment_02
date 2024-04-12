@@ -75,4 +75,5 @@ axs[1, 1].set_title('Gaussian Noise: sigma=100')
 axs[1, 2].imshow(otsu_image, cmap='gray')
 axs[1, 2].set_title("Otsu's Algorithm")
 
+# Plot all the images
 plt.show()
