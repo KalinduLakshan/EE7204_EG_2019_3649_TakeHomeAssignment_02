@@ -14,7 +14,7 @@ cv2.rectangle(image, (100, 100), (250, 250), black_pixel, -1)  # Black object
 cv2.rectangle(image, (300, 300), (375, 375), white_pixel, -1)  # White object
 
 
-# Adding Gaussian noise to the image
+# Adding Gaussian noise to the original image
 def add_gaussian_noise(img, mean, sigma):
     if len(img.shape) == 2:
         h, w = img.shape  # h-height, w-width for grayscale images
