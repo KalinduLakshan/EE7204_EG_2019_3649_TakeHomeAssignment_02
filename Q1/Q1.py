@@ -9,7 +9,7 @@ image = np.full((550, 550), 128, dtype=np.uint8)
 black_pixel = 0
 white_pixel = 255
 
-# Draw the objects
+# Draw the original image objects
 cv2.rectangle(image, (100, 100), (250, 250), black_pixel, -1)  # Black object
 cv2.rectangle(image, (300, 300), (375, 375), white_pixel, -1)  # White object
 
