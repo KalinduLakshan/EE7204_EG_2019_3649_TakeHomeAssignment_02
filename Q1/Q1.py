@@ -20,7 +20,7 @@ def add_gaussian_noise(img, mean, sigma):
         h, w = img.shape  # h-height, w-width for grayscale images
 
         '''
-        Generate the Gaussian noise with a specified mean (mean) and standard deviation (sigma) 
+        Generate Gaussian noise with a specified mean (mean) and standard deviation (sigma) 
         using NumPy's random normal function
         '''
         noise = np.random.normal(mean, sigma, (h, w))  # sigma represents the variance
