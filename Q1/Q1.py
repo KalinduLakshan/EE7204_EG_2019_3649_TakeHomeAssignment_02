@@ -2,78 +2,69 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Create a blank image with a gray background
-image = np.full((550, 550), 128, dtype=np.uint8)
+# Define image dimensions
+height, width = 100, 100
 
-# Define pixel values for the objects
-black_pixel = 0
-white_pixel = 255
+# Create a blank image with a background and two objects
+image = np.zeros((height, width), dtype=np.uint8)
 
-# Draw the original image objects
-cv2.rectangle(image, (100, 100), (250, 250), black_pixel, -1)  # Black object
-cv2.rectangle(image, (300, 300), (375, 375), white_pixel, -1)  # White object
+# Define pixel values for the objects and background
+object1_pixel = 50
+object2_pixel = 200
+background_pixel = 255
+
+# Draw the objects
+cv2.rectangle(image, (20, 20), (40, 40), object1_pixel, -1)  # Object 1
+cv2.rectangle(image, (60, 60), (80, 80), object2_pixel, -1)  # Object 2
+
+# Display the original image
+plt.imshow(image, cmap='gray')
+plt.title('Original Image')
+plt.axis('off')
+plt.show()
 
 
 # Adding Gaussian noise to the original image
 def add_gaussian_noise(img, mean, sigma):
-    if len(img.shape) == 2:
-        h, w = img.shape  # h-height, w-width for grayscale images
-
-        '''
-        Generate Gaussian noise with a specified mean (mean) and standard deviation (sigma) 
-        using NumPy's random normal function
-        '''
-        noise = np.random.normal(mean, sigma, (h, w))  # sigma represents the variance
-
-        '''
-        Add the noise to the original image and then clips the resulting pixel values to be within the range [0, 255]. 
-        This ensures that no pixel values exceed the valid range for uint8 images.
-        '''
-        noisy_img = np.clip(img + noise, 0, 255).astype(np.uint8)
-
-    else:
-        h, w, c = img.shape  # h-height, w-width, c-number of channels used for RGB images
-        noise = np.random.normal(mean, sigma, (h, w, c))
-        noisy_img = np.clip(img + noise, 0, 255).astype(np.uint8)
+    h, w = img.shape  # Image dimensions
+    noise = np.random.normal(mean, sigma, (h, w))  # Generate Gaussian noise
+    noisy_img = np.clip(img + noise, 0, 255).astype(np.uint8)  # Add noise to the image
     return noisy_img
 
 
-# Apply Gaussian noise with different parameters
-noisy_image_1 = add_gaussian_noise(image, 0, 25)
-noisy_image_2 = add_gaussian_noise(image, 0, 50)
-noisy_image_3 = add_gaussian_noise(image, 0, 75)
-noisy_image_4 = add_gaussian_noise(image, 0, 100)
+# Apply Gaussian noise with mean=0 and different sigma values
+noisy_image_sigma_10 = add_gaussian_noise(image, 0, 10)
+noisy_image_sigma_20 = add_gaussian_noise(image, 0, 20)
 
 
-# Apply Otsu's thresholding algorithm
+# Define Otsu's thresholding algorithm
 def otsu_threshold(img):
-    _, otsu_threshold_image = cv2.threshold(img, 120, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    _, otsu_threshold_image = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     return otsu_threshold_image
 
 
-# Call the otsu_threshold function and assign its value to otsu_image variable
-otsu_image = otsu_threshold(noisy_image_4)
+# Apply Otsu's algorithm to noisy images with sigma=10
+otsu_image_sigma_10 = otsu_threshold(noisy_image_sigma_10)
+otsu_image_sigma_20 = otsu_threshold(noisy_image_sigma_20)
 
 # Plotting the images
-fig, axs = plt.subplots(2, 3, figsize=(15, 10))
+fig, axs = plt.subplots(1, 3, figsize=(15, 5))
 
 # Original image
-axs[0, 0].imshow(image, cmap='gray')
-axs[0, 0].set_title('Original Image')
+axs[0].imshow(image, cmap='gray')
+axs[0].set_title('Original Image')
+axs[0].axis('off')
 
-# Noisy images for different sigma values
-axs[0, 1].imshow(noisy_image_1, cmap='gray')
-axs[0, 1].set_title('Gaussian Noise: sigma=25')
-axs[0, 2].imshow(noisy_image_2, cmap='gray')
-axs[0, 2].set_title('Gaussian Noise: sigma=50')
-axs[1, 0].imshow(noisy_image_3, cmap='gray')
-axs[1, 0].set_title('Gaussian Noise: sigma=75')
-axs[1, 1].imshow(noisy_image_4, cmap='gray')
-axs[1, 1].set_title('Gaussian Noise: sigma=100')
+# Noisy image with sigma=10
+axs[1].imshow(noisy_image_sigma_10, cmap='gray')
+axs[1].set_title('Noisy Image (sigma=10)')
+axs[1].axis('off')
 
-# Otsu's image
-axs[1, 2].imshow(otsu_image, cmap='gray')
-axs[1, 2].set_title("Otsu's Algorithm")
+# Otsu's image with sigma=10
+axs[2].imshow(otsu_image_sigma_10, cmap='gray')
+axs[2].set_title("Otsu's Algorithm (sigma=10)")
+axs[2].axis('off')
 
-# Plot all the images
+# Show the plots
+plt.tight_layout()
 plt.show()
