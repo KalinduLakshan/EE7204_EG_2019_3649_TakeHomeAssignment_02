@@ -1,5 +1,7 @@
+# Import the necessary libraries
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 def get_eight_neighbour(x, y, shape):
@@ -27,7 +29,7 @@ def get_eight_neighbour(x, y, shape):
 def region_growing(im, seed):
     # Performs region growing from a given seed point
     seed_points = [seed]  # Start with the initial seed point
-    output_img = np.zeros_like(img)  # Output image initialized to zeros (black)
+    output_img = np.zeros_like(im)  # Output image initialized to zeros (black)
     processed = set()  # A set to track processed points
 
     while seed_points:
@@ -39,8 +41,8 @@ def region_growing(im, seed):
         processed.add(pix)  # Add to the set of processed points
 
         # Add neighbors to the seed points if they haven't been processed
-        for coord in get_eight_neighbour(pix[0], pix[1], img.shape):
-            if img[coord[0], coord[1]] == 255 and coord not in processed:
+        for coord in get_eight_neighbour(pix[0], pix[1], im.shape):
+            if im[coord[0], coord[1]] == 255 and coord not in processed:
                 seed_points.append(coord)
 
     return output_img
@@ -58,8 +60,20 @@ ret, img = cv2.threshold(image, 128, 255, cv2.THRESH_BINARY)
 # Use the predefined seed point for region growing
 rg_out = region_growing(img, predefined_seed)
 
-# Display the original and the region-grown images
-cv2.imshow('Original Image', image)
-cv2.imshow('Region Growing Image', rg_out)
-cv2.waitKey(0)  # Wait indefinitely until a key is pressed
-cv2.destroyAllWindows()  # Close all OpenCV windows
+# Create subplots to display the original and the region-grown image
+plt.figure(figsize=(10, 5))  # Set the figure size
+
+# Original image subplot
+plt.subplot(1, 2, 1)  # 1 row, 2 columns, 1st subplot
+plt.imshow(image, cmap='gray')  # Display the original image in grayscale
+plt.title('Original Image')
+plt.axis('off')  # Hide axis
+
+# Region growing result subplot
+plt.subplot(1, 2, 2)  # 1 row, 2 columns, 2nd subplot
+plt.imshow(rg_out, cmap='gray')  # Display the region-grown image in grayscale
+plt.title('Region-Grown Image')
+plt.axis('off')  # Hide axis
+
+# Show the plot
+plt.show()
