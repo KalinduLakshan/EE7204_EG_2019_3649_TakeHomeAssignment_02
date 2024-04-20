@@ -45,7 +45,6 @@ def otsu_threshold(img):
 
 # Apply Otsu's algorithm to noisy images with sigma=10
 otsu_image_sigma_10 = otsu_threshold(noisy_image_sigma_10)
-otsu_image_sigma_20 = otsu_threshold(noisy_image_sigma_20)
 
 # Plotting the images
 fig, axs = plt.subplots(1, 3, figsize=(15, 5))
