@@ -52,7 +52,7 @@ def otsu_threshold(img):
 
 
 # Call the otsu_threshold function and assign its value to otsu_image variable
-otsu_image = otsu_threshold(image)
+otsu_image = otsu_threshold(noisy_image_4)
 
 # Plotting the images
 fig, axs = plt.subplots(2, 3, figsize=(15, 10))
