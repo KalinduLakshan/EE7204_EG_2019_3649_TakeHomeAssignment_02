@@ -49,10 +49,10 @@ def region_growing(im, seed):
 
 
 # Define the predefined seed point
-predefined_seed = (100, 10)  # (y, x) coordinate for the seed point
+predefined_seed = (150, 150)  # (y, x) coordinate for the seed point
 
 # Load the image and convert to grayscale
-image = cv2.imread('apple.jpg', 0)
+image = cv2.imread('girl.jpg', 0)
 
 # Apply a binary threshold to create a binary image
 ret, img = cv2.threshold(image, 128, 255, cv2.THRESH_BINARY)
