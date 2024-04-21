@@ -1,70 +1,48 @@
-import cv2
 import numpy as np
+import cv2 as cv
 import matplotlib.pyplot as plt
 
-# Define image dimensions
-height, width = 100, 100
-
-# Create a blank image with a background and two objects
-image = np.zeros((height, width), dtype=np.uint8)
-
-# Define pixel values for the objects and background
-object1_pixel = 50
-object2_pixel = 200
-background_pixel = 255
-
-# Draw the objects
-cv2.rectangle(image, (20, 20), (40, 40), object1_pixel, -1)  # Object 1
-cv2.rectangle(image, (60, 60), (80, 80), object2_pixel, -1)  # Object 2
-
-# Display the original image
-plt.imshow(image, cmap='gray')
-plt.title('Original Image')
-plt.axis('off')
-plt.show()
-
-
-# Adding Gaussian noise to the original image
-def add_gaussian_noise(img, mean, sigma):
-    h, w = img.shape  # Image dimensions
-    noise = np.random.normal(mean, sigma, (h, w))  # Generate Gaussian noise
-    noisy_img = np.clip(img + noise, 0, 255).astype(np.uint8)  # Add noise to the image
+def add_gaussian_noise(img, mean=0, sigma=25):
+    """Adds Gaussian noise to an image."""
+    gauss = np.random.normal(mean, sigma, img.shape).astype(np.float32)
+    noisy_img = cv.add(img.astype(np.float32), gauss)
+    noisy_img = np.clip(noisy_img, 0, 255).astype(np.uint8)
     return noisy_img
 
+def apply_otsus_threshold(img):
+    """Applies Otsu's thresholding to an image."""
+    _, thresh_img = cv.threshold(img, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
+    return thresh_img
 
-# Apply Gaussian noise with mean=0 and different sigma values
-noisy_image_sigma_10 = add_gaussian_noise(image, 0, 10)
-noisy_image_sigma_20 = add_gaussian_noise(image, 0, 20)
+# Create an image with a black background
+height, width = 200, 200
+image = np.zeros((height, width), dtype=np.uint8)
 
+# Draw a gray rectangle
+cv.rectangle(image, (50, 50), (150, 120), 100, -1)  # Gray value
 
-# Define Otsu's thresholding algorithm
-def otsu_threshold(img):
-    _, otsu_threshold_image = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    return otsu_threshold_image
+# Draw a white square
+cv.rectangle(image, (70, 130), (130, 190), 200, -1)  # White value
 
+# Generate a noisy version of the image
+noisy_image = add_gaussian_noise(image)
 
-# Apply Otsu's algorithm to noisy images with sigma=10
-otsu_image_sigma_10 = otsu_threshold(noisy_image_sigma_10)
-otsu_image_sigma_20 = otsu_threshold(noisy_image_sigma_20)
+# Apply Otsu's thresholding
+thresholded_image = apply_otsus_threshold(noisy_image)
 
-# Plotting the images
-fig, axs = plt.subplots(1, 3, figsize=(15, 5))
+# Display the results
+fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+axes[0].imshow(image, cmap='gray')
+axes[0].set_title('Original Image')
+axes[0].axis('off')
 
-# Original image
-axs[0].imshow(image, cmap='gray')
-axs[0].set_title('Original Image')
-axs[0].axis('off')
+axes[1].imshow(noisy_image, cmap='gray')
+axes[1].set_title('Noisy Image')
+axes[1].axis('off')
 
-# Noisy image with sigma=10
-axs[1].imshow(noisy_image_sigma_10, cmap='gray')
-axs[1].set_title('Noisy Image (sigma=10)')
-axs[1].axis('off')
+axes[2].imshow(thresholded_image, cmap='gray')
+axes[2].set_title('Thresholded Image')
+axes[2].axis('off')
 
-# Otsu's image with sigma=10
-axs[2].imshow(otsu_image_sigma_10, cmap='gray')
-axs[2].set_title("Otsu's Algorithm (sigma=10)")
-axs[2].axis('off')
-
-# Show the plots
 plt.tight_layout()
 plt.show()
