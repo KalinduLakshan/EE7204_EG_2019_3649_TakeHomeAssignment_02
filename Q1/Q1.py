@@ -2,6 +2,7 @@ import numpy as np
 import cv2 as cv
 import matplotlib.pyplot as plt
 
+
 def add_gaussian_noise(img, mean=0, sigma=25):
     """Adds Gaussian noise to an image."""
     gauss = np.random.normal(mean, sigma, img.shape).astype(np.float32)
@@ -9,10 +10,12 @@ def add_gaussian_noise(img, mean=0, sigma=25):
     noisy_img = np.clip(noisy_img, 0, 255).astype(np.uint8)
     return noisy_img
 
+
 def apply_otsus_threshold(img):
     """Applies Otsu's thresholding to an image."""
     _, thresh_img = cv.threshold(img, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
     return thresh_img
+
 
 # Create an image with a black background
 height, width = 200, 200
